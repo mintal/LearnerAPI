@@ -366,3 +366,5 @@ appsettings.json
 appsettings.*.json
 
 Properties/
+
+.idea/

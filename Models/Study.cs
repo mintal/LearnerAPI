@@ -1,4 +1,4 @@
-namespace Learner.Models
+namespace LearnerAPI.Models
 {
     public class Study
     {

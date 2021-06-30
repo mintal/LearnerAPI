@@ -1,4 +1,4 @@
-using Learner.Models;
+using LearnerAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LearnerAPI.Contexts
