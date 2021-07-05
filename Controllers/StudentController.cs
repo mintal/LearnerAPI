@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LearnerAPI.Contexts;
 using LearnerAPI.DTO;
 using LearnerAPI.Models;
@@ -15,10 +17,12 @@ namespace LearnerAPI.Controllers
     public class StudentController : ControllerBase
     {
         private readonly StudentsContext _context;
+        private readonly IMapper _mapper;
 
-        public StudentController(StudentsContext context)
+        public StudentController(StudentsContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -28,51 +32,41 @@ namespace LearnerAPI.Controllers
         [HttpGet]
         public async Task<List<StudentDTO>> GetAll()
         {
-            return await _context.Students.Select(s => new StudentDTO()
-            {
-                Initials = s.Initials,
-                LastName = s.LastName,
-                StudentId = s.StudentId,
-                StudentNumber = s.StudentNumber,
-                StudyId = s.Study.StudyId
-            }).ToListAsync();
+            return await _context.Students.Include(s => s.Study).ProjectTo<StudentDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         /// <summary>
         /// Obtain student by Guid
         /// </summary>
-        /// <param name="student"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<Student>> Get(Guid id)
+        public async Task<ActionResult<StudentDTO>> Get(Guid id)
         {
-            return await _context.Students.FindAsync(id);
+            Student student = await _context.Students.Include(s => s.Study).FirstAsync(s => s.StudentId == id);
+            return _mapper.Map<StudentDTO>(student);
         }
-        
+
         /// <summary>
         /// Create a student following the StudentCreateDTO credentials
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns>created student</returns>
         [HttpPost]
-        public async Task<ActionResult<Student>> Post(StudentCreateDTO ctx)
+        public async Task<ActionResult<StudentDTO>> Post(StudentCreateDTO ctx)
         {
-            //map DTO to Model
-            Student student = new()
-            {
-                StudentId = Guid.NewGuid(),
-                Initials = ctx.Initials,
-                LastName = ctx.LastName,
-                StudentNumber = ctx.StudentNumber,
-                Study = await _context.Studies.FindAsync(ctx.StudyId)
-            };
-            
+            //map DTO to Student
+            Student s = _mapper.Map<Student>(ctx);
+            s.Study = await _context.Studies.FindAsync(ctx.StudyId);
+
             //add to database
-            _context.Students.Add(student);
+            //todo: catch duplicate entry exception
+            _context.Students.Add(s);
             await _context.SaveChangesAsync();
-            
+
             //return database result
-            return await _context.Students.FindAsync(student.StudentId);
+            return await Get(s.StudentId);
         }
     }
 }
