@@ -28,8 +28,7 @@ namespace LearnerAPI.Controllers
         [HttpGet]
         public async Task<List<StudentDTO>> GetAll()
         {
-            //todo: move mapping to StudentMapper
-            return await _context.Students.Select(s => new StudentDTO
+            return await _context.Students.Select(s => new StudentDTO()
             {
                 Initials = s.Initials,
                 LastName = s.LastName,
@@ -45,7 +44,6 @@ namespace LearnerAPI.Controllers
         /// <param name="student"></param>
         /// <returns></returns>
         [HttpGet("{id:guid}")]
-        //todo change to StudentDTO
         public async Task<ActionResult<Student>> Get(Guid id)
         {
             return await _context.Students.FindAsync(id);
@@ -59,9 +57,16 @@ namespace LearnerAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Student>> Post(StudentCreateDTO ctx)
         {
-            Study study = await _context.Studies.FindAsync(ctx.StudyId);
-            Student student = StudentMapper.MapStudent(ctx, study);
-
+            //map DTO to Model
+            Student student = new()
+            {
+                StudentId = Guid.NewGuid(),
+                Initials = ctx.Initials,
+                LastName = ctx.LastName,
+                StudentNumber = ctx.StudentNumber,
+                Study = await _context.Studies.FindAsync(ctx.StudyId)
+            };
+            
             //add to database
             _context.Students.Add(student);
             await _context.SaveChangesAsync();

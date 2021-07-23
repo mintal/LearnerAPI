@@ -3,14 +3,16 @@ using System;
 using LearnerAPI.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LearnerAPI.Migrations
 {
     [DbContext(typeof(StudentsContext))]
-    partial class StudentsContextModelSnapshot : ModelSnapshot
+    [Migration("20210705134628_UniqueStudent")]
+    partial class UniqueStudent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,13 +34,15 @@ namespace LearnerAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<int?>("StudentNumber")
-                        .HasMaxLength(8)
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int>("StudyId")
+                    b.Property<int?>("StudyId")
                         .HasColumnType("int");
 
                     b.HasKey("StudentId");
+
+                    b.HasAlternateKey("StudentNumber");
 
                     b.HasIndex("StudyId");
 
@@ -61,16 +65,11 @@ namespace LearnerAPI.Migrations
 
             modelBuilder.Entity("LearnerAPI.Models.Student", b =>
                 {
-                    b.HasOne("Learner.Models.Study", "Study")
+                    b.HasOne("LearnerAPI.Models.Study", "Study")
                         .WithMany()
                         .HasForeignKey("StudyId");
 
                     b.Navigation("Study");
-                });
-
-            modelBuilder.Entity("LearnerAPI.Models.Study", b =>
-                {
-                    b.Navigation("Students");
                 });
 #pragma warning restore 612, 618
         }

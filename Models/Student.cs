@@ -6,7 +6,7 @@ namespace LearnerAPI.Models
     public class Student
     {
         public Guid StudentId { get; set; }
-
+        
         public int? StudentNumber { get; set; }
 
         //binds StudyId to Study.StudyId

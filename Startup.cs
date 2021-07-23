@@ -27,9 +27,6 @@ namespace LearnerAPI
             );
 
             services.AddControllers();
-            services.AddControllers().AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            );
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "LearnerAPI", Version = "v1"});
