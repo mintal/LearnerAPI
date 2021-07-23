@@ -26,8 +26,8 @@ namespace LearnerAPI.Migrations
                 columns: table => new
                 {
                     StudentId = table.Column<byte[]>(type: "varbinary(16)", nullable: false),
-                    StudentNumber = table.Column<int>(type: "int", maxLength: 8, nullable: true),
-                    StudyId = table.Column<int>(type: "int", nullable: true),
+                    StudentNumber = table.Column<int>(type: "int", nullable: true),
+                    StudyId = table.Column<int>(type: "int", nullable: false),
                     Initials = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false)
                 },
@@ -39,7 +39,7 @@ namespace LearnerAPI.Migrations
                         column: x => x.StudyId,
                         principalTable: "Studies",
                         principalColumn: "StudyId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

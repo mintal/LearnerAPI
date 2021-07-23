@@ -2,14 +2,14 @@ using System;
 
 namespace LearnerAPI.DTO
 {
-    public class StudentDTO
+    public record StudentDTO
     {
-        public Guid StudentId { get; set; }
-        public int? StudentNumber { get; set; }
+        public Guid StudentId { get; init; }
+        public int? StudentNumber { get; init; }
 
-        public string Initials { get; set; }
-        public string LastName { get; set; }
-        
-        public int? StudyId { get; set; }
+        public string Initials { get; init; }
+        public string LastName { get; init; }
+
+        public int? StudyId { get; init; }
     }
 }

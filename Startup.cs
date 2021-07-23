@@ -1,18 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LearnerAPI.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace LearnerAPI
 {
@@ -30,9 +24,12 @@ namespace LearnerAPI
         {
             services.AddDbContext<StudentsContext>(
                 options => options.UseMySQL(Configuration.GetConnectionString("StudentsContext"))
-                );
-            
+            );
+
             services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            );
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "LearnerAPI", Version = "v1"});

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnerAPI.Migrations
 {
     [DbContext(typeof(StudentsContext))]
-    [Migration("20210629204250_Initial")]
+    [Migration("20210723213432_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace LearnerAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.7");
 
-            modelBuilder.Entity("Learner.Models.Student", b =>
+            modelBuilder.Entity("LearnerAPI.Models.Student", b =>
                 {
                     b.Property<byte[]>("StudentId")
                         .ValueGeneratedOnAdd()
@@ -34,10 +34,9 @@ namespace LearnerAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<int?>("StudentNumber")
-                        .HasMaxLength(8)
                         .HasColumnType("int");
 
-                    b.Property<int?>("StudyId")
+                    b.Property<int>("StudyId")
                         .HasColumnType("int");
 
                     b.HasKey("StudentId");
@@ -47,7 +46,7 @@ namespace LearnerAPI.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("Learner.Models.Study", b =>
+            modelBuilder.Entity("LearnerAPI.Models.Study", b =>
                 {
                     b.Property<int>("StudyId")
                         .ValueGeneratedOnAdd()
@@ -61,13 +60,20 @@ namespace LearnerAPI.Migrations
                     b.ToTable("Studies");
                 });
 
-            modelBuilder.Entity("Learner.Models.Student", b =>
+            modelBuilder.Entity("LearnerAPI.Models.Student", b =>
                 {
-                    b.HasOne("Learner.Models.Study", "Study")
-                        .WithMany()
-                        .HasForeignKey("StudyId");
+                    b.HasOne("LearnerAPI.Models.Study", "Study")
+                        .WithMany("Students")
+                        .HasForeignKey("StudyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Study");
+                });
+
+            modelBuilder.Entity("LearnerAPI.Models.Study", b =>
+                {
+                    b.Navigation("Students");
                 });
 #pragma warning restore 612, 618
         }

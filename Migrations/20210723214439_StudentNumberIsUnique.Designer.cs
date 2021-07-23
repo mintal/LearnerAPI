@@ -3,14 +3,16 @@ using System;
 using LearnerAPI.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LearnerAPI.Migrations
 {
     [DbContext(typeof(StudentsContext))]
-    partial class StudentsContextModelSnapshot : ModelSnapshot
+    [Migration("20210723214439_StudentNumberIsUnique")]
+    partial class StudentNumberIsUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
